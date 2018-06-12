@@ -180,12 +180,22 @@ class CustomAdminController extends Controller {
 	
 	public function getManualPayment($id) {
 		if($item = \Solunes\Payments\App\Payment::find($id)){
-			$item->transaction_payment_code = \Pagostt::generatePaymentCode();
-			$item->payment_date = date('Y-m-d');
-			$item->status = 'paid';
-			$item->paid_method = 'manual';
-			$item->save();
-			return redirect($this->prev)->with('message_success', 'Pago realizado correctamente.');
+			$payment_method = \Solunes\Payments\App\PaymentMethod::where('code', 'manual-payment')->first();
+			if($payment_method){
+				$transaction = new \Solunes\Payments\App\Transaction;
+				$transaction->callback_url = $payment_method->code;
+				$transaction->payment_code = \Payments::generatePaymentCode();
+				$transaction->payment_method_id = $payment_method->id;
+				$transaction->save();
+				$transaction_payment = new \Solunes\Payments\App\TransactionPayment;
+				$transaction_payment->parent_id = $transaction->id;
+				$transaction_payment->payment_id = $id;
+				$transaction_payment->save();
+				$transaction->external_payment_code = \Payments::generatePaymentCode();
+				$transaction->processed = 1;
+				$transaction->save();
+				return redirect($this->prev)->with('message_success', 'Pago realizado correctamente.');
+			}
 		}
 		return redirect($this->prev)->with('message_error', 'Error al realizar el pago.');
 	}

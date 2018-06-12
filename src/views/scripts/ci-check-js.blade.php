@@ -3,7 +3,7 @@
     e.preventDefault();
     var value = $(this).val();
     $.ajax({
-        url: "{{ url('admin/check-ci') }}/"+value,
+        url: "{{ url('process/check-ci') }}/"+value,
         success: function(respuesta) {
             if(respuesta['exists']){
                 var key = 1;

@@ -1,5 +1,5 @@
 <script type="text/javascript">
-  $( "#1_ci_number" ).on( "change", function(e) {
+  $( "#ci_number" ).on( "change", function(e) {
     e.preventDefault();
     var value = $(this).val();
     $.ajax({

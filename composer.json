@@ -1,0 +1,35 @@
+{
+    "name": "todotix/customer",
+    "description": "Paquete adicional de Clientes para proyectos de Todotix.",
+    "keywords": ["laravel", "solunes", "todotix", "customer"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Solunes Digital",
+            "email": "info@solunes.com"
+        }
+    ],
+    "require": {
+        "solunes/master": "*",
+        "solunes/notification": "*",
+        "solunes/pagostt": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "4.8.*"
+    },
+    "autoload": {
+        "classmap": [
+            "src/database/migrations",
+            "src/app/Controllers",
+            "src/app/Console"
+       ],
+        "psr-4": {
+            "Todotix\\Customer\\": "src/"
+        }
+    },
+    "minimum-stability": "dev",
+    "scripts": {
+        "test": "phpunit"
+    },
+    "prefer-stable": true
+}

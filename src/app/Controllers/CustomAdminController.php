@@ -199,6 +199,15 @@ class CustomAdminController extends Controller {
 		}
 		return redirect($this->prev)->with('message_error', 'Error al realizar el pago.');
 	}
+     
+    public function getCheckCi($ci_number) {
+	    if($customer = \Todotix\Customer\App\Customer::where('ci_number', $ci_number)->first()){
+	      // Send Mail
+	      return ['exists'=>true, 'customer'=>$customer->toArray()];
+	    } else {
+	      return ['exists'=>false, 'customer'=>NULL];
+	    }
+    }
 
 	public function getManualLogin($customer_id) {
 		if($item = \Todotix\Customer\App\Customer::find($customer_id)){

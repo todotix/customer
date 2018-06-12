@@ -35,7 +35,13 @@ class NodesCustomer extends Migration
             if(config('customers.fields.shirt')){
                 $table->integer('shirt')->nullable();
             }
-            if(config('customers.fields.emergency')){
+            if(config('customers.fields.shirt_size')){
+                $table->string('shirt_size')->nullable();
+            }
+            if(config('customers.fields.emergency_short')){
+                $table->string('emergency')->nullable();
+            }
+            if(config('customers.fields.emergency_long')){
                 $table->string('emergency_name')->nullable();
                 $table->string('emergency_number')->nullable();
             }

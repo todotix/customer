@@ -17,7 +17,7 @@ Route::group(['prefix'=>'admin'], function(){
     Route::get('list-payments', 'CustomAdminController@getPaymentsList');
     Route::get('manual-pay/{id}', 'CustomAdminController@getManualPayment');
     Route::get('login-as/{customer_id}', 'CustomAdminController@getManualLogin');
-    
+    Route::get('check-ci/{ci_number}', 'CustomAdminController@getCheckCi');
     // Users
     Route::get('redirect', 'CustomAdminController@getRedirect');
     Route::get('my-accounts', 'CustomAdminController@getMyAccounts');

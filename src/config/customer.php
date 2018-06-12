@@ -8,7 +8,9 @@ return [
     'fields' => [
         'age'=> false,
         'shirt'=> false,
-        'emergency'=> false,
+        'shirt_size'=> false,
+        'emergency_short'=> false,
+        'emergency_long'=> false,
     ],
 
 ];

@@ -203,7 +203,7 @@ class CustomAdminController extends Controller {
  	public function getManualLogin($customer_id) {
 		if($item = \Todotix\Customer\App\Customer::find($customer_id)){
 			auth()->login($item->user);
-			return redirect('my-payments')->with('message_success', 'Sesión cambiada correctamente.');
+			return redirect('admin/my-payments')->with('message_success', 'Sesión cambiada correctamente.');
 		}
 		return redirect($this->prev)->with('message_success', 'Hubo un error al cambiar su sesión.');
 	}

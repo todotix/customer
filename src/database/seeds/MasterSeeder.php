@@ -16,7 +16,7 @@ class MasterSeeder extends Seeder {
 
         // Módulo General de Empresa ERP
         $node_customer = \Solunes\Master\App\Node::create(['name'=>'customer', 'location'=>'customer', 'folder'=>'todotix']);
-        if(config('customers.dependants')){
+        if(config('customer.dependants')){
             $node_customer_dependant = \Solunes\Master\App\Node::create(['name'=>'customer-dependant', 'location'=>'customer', 'folder'=>'todotix']);
         }
         

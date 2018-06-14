@@ -13,7 +13,7 @@ class TruncateSeeder extends Seeder {
      */
     public function run()
     {
-        if(config('customers.dependants')){
+        if(config('customer.dependants')){
         	\Todotix\Customer\App\CustomerDependant::truncate();
         }
         \Todotix\Customer\App\Customer::truncate();

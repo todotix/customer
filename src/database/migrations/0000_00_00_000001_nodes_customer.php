@@ -50,7 +50,7 @@ class NodesCustomer extends Migration
             }
             $table->timestamps();
         });
-        if(config('customers.dependants')){
+        if(config('customer.dependants')){
             Schema::create('customer_dependants', function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('customer_id')->nullable();

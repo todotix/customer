@@ -9,7 +9,7 @@ class Customer extends Model {
 	protected $table = 'customers';
 	public $timestamps = true;
 
-	/*if(config('customers.customer_trait')){
+	/*if(config('customer.customer_trait')){
 		use \App\Traits\Customer;
 	}*/
 

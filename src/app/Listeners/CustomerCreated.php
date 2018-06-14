@@ -5,7 +5,7 @@ namespace Todotix\Customer\App\Listeners;
 class CustomerCreated {
 
     public function handle($event) {
-        if(config('customers.send_mail')&&$event->email){
+        if(config('customer.send_mail')&&$event->email){
             $email_title = config('app.name').' | Registro Realizado Exitosamente';
             $to_array = [$event->email];
             $message_title = 'Registro Realizado';

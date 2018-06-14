@@ -46,7 +46,7 @@ class ProcessController extends Controller {
         }
         $fields_array = array_merge($fields_array, ['ci_number','ci_expedition','first_name','last_name','email','phone','address','birth_date']);
 	    $rules = \Customer::validateRegister($fields_array);
-        if(config('customers.fields.password')){
+        if(config('customer.fields.password')){
 	    	$rules['password'] = 'required|confirmed';
 	    }
 	    if(config('customer.custom.register_rules')){
@@ -57,7 +57,7 @@ class ProcessController extends Controller {
 	      $ci_number = $request->input('ci_number');
 	      $email = $request->input('email');
 	      $password = NULL;
-          if(config('customers.fields.password')){
+          if(config('customer.fields.password')){
 	        $password = $request->input('password');
 	      }
 	      if(\Todotix\Customer\App\Customer::where('ci_number', $ci_number)->orWhere('email', $email)->first()){

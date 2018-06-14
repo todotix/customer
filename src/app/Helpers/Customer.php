@@ -44,8 +44,9 @@ class Customer {
 
         if(!$customer = \Todotix\Customer\App\Customer::where('ci_number', $ci_number)->where('email', $email)->first()){
             $customer = new \Todotix\Customer\App\Customer;
-            $customer->first_name = $first_name;
-            $customer->last_name = $last_name;
+            $customer->first_name = $array['first_name'];
+            $customer->last_name = $array['last_name'];
+            $customer->ci_number = $array['ci_number'];
             $customer->password = $password;
             $customer->email = $email;
         }

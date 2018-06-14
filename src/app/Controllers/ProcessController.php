@@ -25,28 +25,31 @@ class ProcessController extends Controller {
     public function postRegistro(Request $request) {
 	    $fields_array = [];
         if(config('customers.fields.password')){
-            $fields_array[] = 'password');
-            $fields_array[] = 'password_confirmation');
+            $fields_array[] = 'password';
+            $fields_array[] = 'password_confirmation';
         }
         if(config('customers.fields.member_code')){
-            $fields_array[] = 'member_code');
+            $fields_array[] = 'member_code';
         }
         if(config('customers.fields.shirt')){
-            $fields_array[] = 'shirt');
+            $fields_array[] = 'shirt';
         }
         if(config('customers.fields.shirt_size')){
-            $fields_array[] = 'shirt_size');
+            $fields_array[] = 'shirt_size';
         }
         if(config('customers.fields.emergency_short')){
-            $fields_array[] = 'emergency');
+            $fields_array[] = 'emergency';
         }
         if(config('customers.fields.emergency_long')){
-            $fields_array[] = 'emergency_name');
-            $fields_array[] = 'emergency_number');
+            $fields_array[] = 'emergency_name';
+            $fields_array[] = 'emergency_number';
         }
 	    $rules = \Customer::validateRegister($fields_array);
         if(config('customers.fields.password')){
 	    	$rules['password'] = 'required|confirmed';
+	    }
+	    if(config('customer.custom.register_rules')){
+	        $rules = \CustomFunc::customerCustomRegisterRules($rules);
 	    }
 	    $validator = \Validator::make($request->all(), $rules);
 	    if(!$validator->fails()) {

@@ -14,8 +14,8 @@ return [
         'emergency_long'=> false,
     ],
     'custom' => [
-        // After login true configurarlo en solunes
         'register'=> false,
+        'register_rules'=> false,
         'after_register'=> false,
         'after_login'=> false,
         'after_succesful_payment'=> false,

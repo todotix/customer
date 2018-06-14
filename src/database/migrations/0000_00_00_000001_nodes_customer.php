@@ -29,22 +29,22 @@ class NodesCustomer extends Migration
             $table->date('birth_date')->nullable(); // Obligatorio
             $table->string('password')->nullable(); // Obligatorio
             $table->boolean('active')->default(0); // Obligatorio
-            if(config('customers.fields.member_code')){
+            if(config('customer.fields.member_code')){
                 $table->string('member_code')->nullable();
             }
-            if(config('customers.fields.age')){
+            if(config('customer.fields.age')){
                 $table->integer('age')->nullable();
             }
-            if(config('customers.fields.shirt')){
+            if(config('customer.fields.shirt')){
                 $table->integer('shirt')->nullable();
             }
-            if(config('customers.fields.shirt_size')){
+            if(config('customer.fields.shirt_size')){
                 $table->string('shirt_size')->nullable();
             }
-            if(config('customers.fields.emergency_short')){
+            if(config('customer.fields.emergency_short')){
                 $table->string('emergency')->nullable();
             }
-            if(config('customers.fields.emergency_long')){
+            if(config('customer.fields.emergency_long')){
                 $table->string('emergency_name')->nullable();
                 $table->string('emergency_number')->nullable();
             }

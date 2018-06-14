@@ -24,23 +24,23 @@ class ProcessController extends Controller {
 
     public function postRegistro(Request $request) {
 	    $fields_array = [];
-        if(config('customers.fields.password')){
+        if(config('customer.fields.password')){
             $fields_array[] = 'password';
             $fields_array[] = 'password_confirmation';
         }
-        if(config('customers.fields.member_code')){
+        if(config('customer.fields.member_code')){
             $fields_array[] = 'member_code';
         }
-        if(config('customers.fields.shirt')){
+        if(config('customer.fields.shirt')){
             $fields_array[] = 'shirt';
         }
-        if(config('customers.fields.shirt_size')){
+        if(config('customer.fields.shirt_size')){
             $fields_array[] = 'shirt_size';
         }
-        if(config('customers.fields.emergency_short')){
+        if(config('customer.fields.emergency_short')){
             $fields_array[] = 'emergency';
         }
-        if(config('customers.fields.emergency_long')){
+        if(config('customer.fields.emergency_long')){
             $fields_array[] = 'emergency_name';
             $fields_array[] = 'emergency_number';
         }

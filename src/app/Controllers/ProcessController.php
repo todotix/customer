@@ -22,22 +22,59 @@ class ProcessController extends Controller {
 	  $this->prev = $url->previous();
 	}
 
-    public function getMakeSinglePayment($customer_id, $payment_id) {
-    	$customer = \PagosttBridge::getCustomer($customer_id, false, false);
-    	$payment = \PagosttBridge::getPayment($payment_id);
-	    if($customer&&$payment){
-	      $pagostt_transaction = \Pagostt::generatePaymentTransaction($customer_id, [$payment_id], $payment['amount']);
-	      $final_fields = \Pagostt::generateTransactionArray($customer, $payment, $pagostt_transaction);
-	      $api_url = \Pagostt::generateTransactionQuery($pagostt_transaction, $final_fields);
-	      if($api_url){
-	      	return redirect($api_url);
-	      } else {
-	      	return redirect($this->prev)->with('message_error', 'Hubo un error al realizar su pago en PagosTT.');
+    public function postRegistro(Request $request) {
+	    $fields_array = [];
+        if(config('customers.fields.password')){
+            $fields_array[] = 'password');
+            $fields_array[] = 'password_confirmation');
+        }
+        if(config('customers.fields.member_code')){
+            $fields_array[] = 'member_code');
+        }
+        if(config('customers.fields.shirt')){
+            $fields_array[] = 'shirt');
+        }
+        if(config('customers.fields.shirt_size')){
+            $fields_array[] = 'shirt_size');
+        }
+        if(config('customers.fields.emergency_short')){
+            $fields_array[] = 'emergency');
+        }
+        if(config('customers.fields.emergency_long')){
+            $fields_array[] = 'emergency_name');
+            $fields_array[] = 'emergency_number');
+        }
+	    $rules = \Customer::validateRegister($fields_array);
+        if(config('customers.fields.password')){
+	    	$rules['password'] = 'required|confirmed';
+	    }
+	    $validator = \Validator::make($request->all(), $rules);
+	    if(!$validator->fails()) {
+	      $ci_number = $request->input('ci_number');
+	      $email = $request->input('email');
+	      $password = NULL;
+          if(config('customers.fields.password')){
+	        $password = $request->input('password');
 	      }
+	      if(\Todotix\Customer\App\Customer::where('ci_number', $ci_number)->orWhere('email', $email)->first()){
+	        return redirect($this->prev)->with('message_error', 'Ya existe un participante registrado con su carnet de identidad. Inicie sesión primero.')->withInput();
+	      }
+	      $array = [];
+	      foreach($fields_array as $key => $val){
+	        $array[$val] = $request->input($val);
+	      }
+	      $customer = \Func::generateCustomer($ci_number, $email $array, $password);
+          if(config('customer.custom.after_register')){
+            $customer = \CustomFunc::customerCustomAfterRegister($customer, $password);
+          }
+	      \Auth::login($customer->user);
+	      \Customer::sendConfirmationEmail($customer);
+	      return redirect('admin/finish-registration')->with('message_success', 'Felicidades, su registro fue realizado correctamente. Ahora finalice su registro y realice el pago para finalizar.');
 	    } else {
-	      return redirect($this->prev)->with('message_error', 'Hubo un error al realizar su pago.');
+	      return redirect($this->prev)->with(array('message_error' => 'Debe llenar todos los campos para finalizar'))->withErrors($validator)->withInput();
 	    }
     }
+
 
     public function getCheckCi($ci_number) {
 	    if($customer = \Todotix\Customer\App\Customer::where('ci_number', $ci_number)->first()){

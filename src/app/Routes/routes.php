@@ -12,5 +12,5 @@
 */
 
 Route::group(['prefix'=>'process'], function(){
-    Route::get('check-ci/{ci_number}', 'CustomAdminController@getCheckCi');
+    Route::get('check-ci/{ci_number}', 'ProcessController@getCheckCi');
 });

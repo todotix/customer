@@ -40,7 +40,7 @@ class CustomAdminController extends Controller {
 		$user = auth()->user();
 		$customers = $user->customers;
 		$array = ['customers'=>$customers];
-		return view('content.my-accounts', $array);
+		return view('customer::content.my-accounts', $array);
 	}
 
 	public function postEditPassword(Request $request) {

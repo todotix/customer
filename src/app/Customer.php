@@ -59,15 +59,15 @@ class Customer extends Model {
     }
 
     public function payments() {
-        return $this->hasMany('Solunes\Payments\App\Payment', 'company_id');
+        return $this->hasMany('Solunes\Payments\App\Payment');
     }
 
     public function pending_payments() {
-        return $this->hasMany('Solunes\Payments\App\Payment', 'company_id')->where('status','pending');
+        return $this->hasMany('Solunes\Payments\App\Payment')->where('status','holding');
     }
 
     public function paid_payments() {
-        return $this->hasMany('Solunes\Payments\App\Payment', 'company_id')->where('status','paid');
+        return $this->hasMany('Solunes\Payments\App\Payment')->where('status','paid');
     }
 
 }

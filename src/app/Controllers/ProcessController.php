@@ -66,7 +66,7 @@ class ProcessController extends Controller {
 	      foreach($fields_array as $key => $val){
 	        $array[$val] = $request->input($val);
 	      }
-	      $customer = \Func::generateCustomer($ci_number, $email, $array, $password);
+	      $customer = \Customer::generateCustomer($ci_number, $email, $array, $password);
           if(config('customer.custom.after_register')){
             $customer = \CustomFunc::customerCustomAfterRegister($customer, $password);
           }

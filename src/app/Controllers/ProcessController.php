@@ -45,7 +45,7 @@ class ProcessController extends Controller {
             $fields_array[] = 'emergency_number';
         }
         $fields_array = array_merge($fields_array, ['ci_number','ci_expedition','first_name','last_name','email','phone','address','birth_date']);
-	    $fields_array = \Customer::validateRegister($fields_array);
+	    $rules = \Customer::validateRegister($fields_array);
         if(config('customers.fields.password')){
 	    	$rules['password'] = 'required|confirmed';
 	    }
@@ -65,7 +65,7 @@ class ProcessController extends Controller {
 	      }
 	      $array = [];
 	      foreach($fields_array as $key => $val){
-	      	if(in_array($val, ['password_confirmation','ci_number','email'])){
+	      	if(!in_array($val, ['password_confirmation','ci_number','email','age'])){
 	        	$array[$val] = $request->input($val);
 	      	}
 	      }

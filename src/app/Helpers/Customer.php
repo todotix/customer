@@ -16,10 +16,9 @@ class Customer {
       \Solunes\Master\App\Menu::create(['menu_type'=>'admin','icon'=>'table','name'=>'Mi Historial','permission'=>'members','link'=>'admin/my-history']);
     }
 
-    public static function validateRegister($array) {
-        $array = array_merge($array, ['ci_number','ci_expedition','first_name','last_name','email','phone','address','birth_date']);
+    public static function validateRegister($fields_array) {
         $response = [];
-        foreach($array as $item){
+        foreach($fields_array as $item){
           if($item=='email'){
             $response[$item] = 'required|email';
           } else {
@@ -44,14 +43,11 @@ class Customer {
 
         if(!$customer = \Todotix\Customer\App\Customer::where('ci_number', $ci_number)->where('email', $email)->first()){
             $customer = new \Todotix\Customer\App\Customer;
-            $customer->first_name = $array['first_name'];
-            $customer->last_name = $array['last_name'];
-            $customer->ci_number = $array['ci_number'];
-            $customer->password = $password;
+            $customer->ci_number = $ci_number;
             $customer->email = $email;
         }
         foreach($array as $key => $val){
-          $customer->$key = $val;
+            $customer->$key = $val;
         }
         if(config('customer.fields.age')){
         	$customer->age = \Customer::calculateAge($customer->birth_date);

@@ -8,7 +8,7 @@ class CustomerSaving {
         $full_name = $event->first_name.' '.$event->last_name;
         $user = \App\User::where('email',$event->email)->orWhere('cellphone',$event->phone)->orWhere('username',$event->ci_number)->first();
         if(!$user){
-            if(!$customer->password){
+            if(!$event->password){
                 $password = rand(100000,999999);
             } else {
                 $password = NULL;

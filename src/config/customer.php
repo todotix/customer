@@ -3,7 +3,7 @@
 return [
 
 	// PARAMETERS
-	'send_mail' => true,
+	'send_mail' => false,
     'dependants' => false,
     'fields' => [
         'password'=> true,

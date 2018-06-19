@@ -6,17 +6,23 @@ class CustomerSaving {
 
     public function handle($event) {
         $full_name = $event->first_name.' '.$event->last_name;
-        $user = \App\User::where('email',$event->email)->orWhere('cellphone',$event->phone)->orWhere('username',$event->ci_number)->first();
+        $user = \App\User::Where('username',$event->ci_number)->first();
+        $user_email_check = \App\User::where('email',$event->email)->first();
+        $user_cellphone_check = \App\User::where('cellphone',$event->phone)->first();
         if(!$user){
             if(!$event->password){
                 $password = rand(100000,999999);
             } else {
-                $password = NULL;
+                $password = $event->password;
             }
             $user = new \App\User;
             $user->name = $full_name;
-            $user->email = $event->email;
-            $user->cellphone = $event->phone;
+            if(!$user_email_check){
+                $user->email = $event->email;
+            }
+           if(!$user_cellphone_check){
+                $user->cellphone = $event->phone;
+            }
             $user->username = $event->ci_number;
             $user->password = $password;
             $user->save();

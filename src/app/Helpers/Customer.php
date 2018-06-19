@@ -41,7 +41,7 @@ class Customer {
         	$password = rand(100000,999999);
         }
 
-        if(!$customer = \Todotix\Customer\App\Customer::where('ci_number', $ci_number)->where('email', $email)->first()){
+        if(!$customer = \Todotix\Customer\App\Customer::where('ci_number', $ci_number)->orWhere('email', $email)->first()){
             $customer = new \Todotix\Customer\App\Customer;
             $customer->ci_number = $ci_number;
             $customer->email = $email;

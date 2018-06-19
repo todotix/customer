@@ -70,4 +70,37 @@ class Customer extends Model {
         return $this->hasMany('Solunes\Payments\App\Payment')->where('status','paid');
     }
 
+    // DEL FUTBOL CTLP
+
+    public function total_goals() {
+        return $this->hasMany('App\TotalGoal');
+    }
+
+    public function getGoalsAttribute() {
+        if($total_goals = $this->total_goals()->orderBy('id','DESC')->first()){
+            return $total_goals->goals;
+        }
+        return 0;
+    }
+
+    public function cards() {
+        return $this->hasMany('App\Card');
+    }
+
+    public function yellow_cards() {
+        return $this->hasMany('App\Card')->where('yellow_card','>',0);
+    }
+
+    public function red_cards() {
+        return $this->hasMany('App\Card')->where('red_card','>',0);
+    }
+
+    public function team_customer() {
+        return $this->hasOne('App\TeamCustomer');
+    }
+
+    public function team_customers() {
+        return $this->hasMany('App\TeamCustomer');
+    }
+
 }

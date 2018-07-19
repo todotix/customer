@@ -90,7 +90,7 @@ class Customer {
     }
 
     // Bridge: Encontrar cliente en sistema o devolver nulo
-    public static function getCustomer($customer_id, $get_pending_payments = false, $for_api = false) {
+    public static function getCustomer($customer_id, $get_pending_payments = false, $for_api = false, $custom_app_key = NULL) {
         if($customer = \Todotix\Customer\App\Customer::where('id',$customer_id)->first()){
             $item = $customer->toArray();
             // Consultar y obtener los pagos pendientes del cliente en formato PagosTT: concepto, cantidad, costo_unitario
@@ -118,7 +118,7 @@ class Customer {
     }
 
     // Bridge: Encontrar pago en sistema o devolver nulo
-    public static function getPayment($payment_id) {
+    public static function getPayment($payment_id, $custom_app_key = NULL) {
         if($payment = \Solunes\Payments\App\Payment::find($payment_id)){
             // Definir variables de pago en formato PagosTT: name, items[concepto, cantidad, costo_unitario]
             $item = [];

@@ -144,12 +144,12 @@ class Customer {
                 $payment_id = $ptt_transaction_payment->payment_id;
                 $payment = \Solunes\Payments\App\Payment::find($payment_id);
                 $payment->status = 'paid';
-                $payment->paid_method = 'pagostt';
-                $payment->transaction_payment_code = $ptt_transaction->payment_code;
+                //$payment->paid_method = 'pagostt';
+                //$payment->transaction_payment_code = $ptt_transaction->payment_code;
                 if($ptt_transaction->invoice_id){
-                    $payment->invoice_id = $ptt_transaction->invoice_id;
+                    $payment->invoice_number = $ptt_transaction->invoice_id;
                 }
-                $payment->payment_date = $date;
+                //$payment->payment_date = $date;
                 $payment->save();
             }
             return true;

@@ -92,7 +92,7 @@ class Customer {
     // Bridge: Encontrar cliente en sistema o devolver nulo
     public static function getCustomer($customer_id, $get_pending_payments = false, $for_api = false, $custom_app_key = NULL) {
         if($customer = \Todotix\Customer\App\Customer::where('id',$customer_id)->first()){
-            $item = $customer->toArray();
+            $array = $customer->toArray();
             // Consultar y obtener los pagos pendientes del cliente en formato PagosTT: concepto, cantidad, costo_unitario
             $pending_payments = [];
             if($get_pending_payments&&config('pagostt.customer_all_payments')){
@@ -108,10 +108,12 @@ class Customer {
                         $pending_payments[$payment->id]['items'][] = $pending_payment;
                     }
                 }
-
+                $array['payment']['name'] = 'Múltiples Pagos';
+                $array['payment']['has_invoice'] = $payment->has_invoice;
+                //$array['payment']['metadata'][] = \Pagostt::generatePaymentMetadata('Tipo de Cambio', $payment->exchange);
             }
-            $item['pending_payments'] = $pending_payments;
-            return $item;
+            $array['pending_payments'] = $pending_payments;
+            return $array;
         } else {
             return NULL;
         }
@@ -130,6 +132,8 @@ class Customer {
             }
             $item['amount'] = $payment->amount;
             $item['items'] = $subitems_array;
+            $item['has_invoice'] = $payment->has_invoice;
+            //$item['metadata'][] = \Pagostt::generatePaymentMetadata('Tipo de Cambio', $payment->exchange);
             return $item;
         } else {
             return NULL;

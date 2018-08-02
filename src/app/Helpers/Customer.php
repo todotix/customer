@@ -108,9 +108,11 @@ class Customer {
                         $pending_payments[$payment->id]['items'][] = $pending_payment;
                     }
                 }
-                $array['payment']['name'] = 'Múltiples Pagos';
-                $array['payment']['has_invoice'] = $payment->has_invoice;
-                //$array['payment']['metadata'][] = \Pagostt::generatePaymentMetadata('Tipo de Cambio', $payment->exchange);
+                if($payment){
+                    $array['payment']['name'] = 'Múltiples Pagos';
+                    $array['payment']['has_invoice'] = $payment->has_invoice;
+                    //$array['payment']['metadata'][] = \Pagostt::generatePaymentMetadata('Tipo de Cambio', $payment->exchange);
+                }
             }
             $array['pending_payments'] = $pending_payments;
             return $array;
@@ -151,7 +153,7 @@ class Customer {
                 //$payment->paid_method = 'pagostt';
                 //$payment->transaction_payment_code = $ptt_transaction->payment_code;
                 if($ptt_transaction->invoice_id){
-                    $payment->invoice_number = $ptt_transaction->invoice_id;
+                    $payment->invoice_code = $ptt_transaction->invoice_id;
                 }
                 //$payment->payment_date = $date;
                 $payment->save();

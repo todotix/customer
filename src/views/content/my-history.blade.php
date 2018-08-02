@@ -12,7 +12,7 @@
           <tr class="title">
             <td>Código</td>
             <td>Fecha de Emisión</td>
-            <td>Fecha de Pago</td>
+            <td>Fecha y Hora de Pago</td>
             <td>Detalle</td>
             <td>Monto</td>
             <td>Acción</td>
@@ -20,18 +20,20 @@
         </thead>
         <tbody>
           @foreach($customer_array['payments'] as $payment)
-            <tr>
-              <td>{{ $payment->transaction_code }}</td>
-              <td>{{ $payment->date }}</td>
-              <td>{{ $payment->payment_date }}</td>
-              <td>{{ $payment->name }}</td>
-              <td>Bs. {{ $payment->amount }}</td>
-              @if($payment->invoice_id)
-              	<td class="restore"><a target="_blank" href="{{ url(config('pagostt.invoice_server').$payment->invoice_id) }}">Ver Factura</a></td>
-              @else
-              	<td class="restore">-</td>
-              @endif
-            </tr>
+            @foreach($payment->processed_transaction_payments as $transaction_payment)
+              <tr>
+                <td>{{ $transaction_payment->parent->payment_code }}</td>
+                <td>{{ $payment->date }}</td>
+                <td>{{ $transaction_payment->parent->created_at->format('d/m/Y H:i') }}</td>
+                <td>{{ $payment->name }}</td>
+                <td>Bs. {{ $payment->amount }}</td>
+                @if($payment->invoice_id)
+                	<td class="restore"><a target="_blank" href="{{ url(config('pagostt.invoice_server').$payment->invoice_id) }}">Ver Factura</a></td>
+                @else
+                	<td class="restore">-</td>
+                @endif
+              </tr>
+            @endforeach
           @endforeach
         </tbody>
       </table>

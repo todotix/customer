@@ -26,5 +26,8 @@ return [
     'phone' => 'Teléfono',
     'updated_at' => 'Fecha de Edición',
     'user' => 'Usuario',
+    'age' => 'Edad',
+    'emergency' => 'Emergencia',
+    'password' => 'Contraseña',
 
 ];

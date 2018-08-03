@@ -5,6 +5,7 @@ return [
 	// PARAMETERS
 	'send_mail' => false,
     'dependants' => false,
+    'enable_test' => true,
     'fields' => [
         'password'=> true,
         'age'=> true,

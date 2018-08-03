@@ -38,7 +38,7 @@ class Customer {
 
     public static function generateCustomer($ci_number, $email, $array, $password) {
         if(!$password){
-        	$password = rand(100000,999999);
+            $password = rand(100000,999999);
         }
 
         if(!$customer = \Todotix\Customer\App\Customer::where('ci_number', $ci_number)->first()){
@@ -50,7 +50,7 @@ class Customer {
             $customer->$key = $val;
         }
         if(config('customer.fields.age')){
-        	$customer->age = \Customer::calculateAge($customer->birth_date);
+            $customer->age = \Customer::calculateAge($customer->birth_date);
         }
         $customer->save();
         if(config('customer.custom.register')){
@@ -89,30 +89,49 @@ class Customer {
         return $customer_payment;
     }
 
-    // Bridge: Encontrar cliente en sistema o devolver nulo
+    // Encontrar cliente en sistema o devolver nulo
     public static function getCustomer($customer_id, $get_pending_payments = false, $for_api = false, $custom_app_key = NULL) {
         if($customer = \Todotix\Customer\App\Customer::where('id',$customer_id)->first()){
-            $array = $customer->toArray();
+            // Definir variables de cliente en formato PagosTT: email, name, nit_name, nit_number
+            $array['id'] = $customer->id;
+            $array['email'] = 'edumejia30@gmail.com';
+            //$item['email'] = $customer->email;
+            $array['ci_number'] = $customer->ci_number;
+            $array['name'] = $customer->first_name.' '.$customer->last_name;
+            $array['first_name'] = $customer->first_name;
+            $array['last_name'] = $customer->last_name;
+            $array['nit_name'] = $customer->nit_name;
+            $array['nit_number'] = $customer->nit_number;
             // Consultar y obtener los pagos pendientes del cliente en formato PagosTT: concepto, cantidad, costo_unitario
             $pending_payments = [];
+            $payment = NULL;
             if($get_pending_payments&&config('pagostt.customer_all_payments')){
                 foreach($customer->pending_payments as $payment){
                     if($for_api){
                         $pending_payments[$payment->id]['name'] = $payment->name;
                         $pending_payments[$payment->id]['due_date'] = $payment->due_date;
-                        $pending_payments[$payment->id]['has_invoice'] = $payment->has_invoice;
                     }
-                    $pending_payments[$payment->id]['amount'] = $payment->amount;
+                    if(config('customer.enable_test')==1){
+                        $pending_payments[$payment->id]['amount'] = count($payment->payment_items);
+                    } else {
+                        $pending_payments[$payment->id]['amount'] = $payment->amount;
+                    }
                     foreach($payment->payment_items as $payment_item){
-                        $pending_payment = \Pagostt::generatePaymentItem($payment_item->name, $payment_item->quantity, $payment_item->amount, $payment->invoice);
+                        if(config('customer.enable_test')==1){
+                            $amount = 1;
+                        } else {
+                            $amount = $payment_item->amount;
+                        }
+                        $pending_payment = \Pagostt::generatePaymentItem($payment_item->name, $payment_item->quantity, $amount, $payment->invoice);
                         $pending_payments[$payment->id]['items'][] = $pending_payment;
                     }
                 }
-                if($payment){
-                    $array['payment']['name'] = 'Múltiples Pagos';
-                    $array['payment']['has_invoice'] = $payment->has_invoice;
-                    //$array['payment']['metadata'][] = \Pagostt::generatePaymentMetadata('Tipo de Cambio', $payment->exchange);
+                if(!$payment){
+                    return [];
                 }
+                $array['payment']['name'] = 'Múltiples Pagos';
+                $array['payment']['has_invoice'] = $payment->invoice;
+                //$array['payment']['metadata'][] = \Pagostt::generatePaymentMetadata('Tipo de Cambio', $payment->exchange);
             }
             $array['pending_payments'] = $pending_payments;
             return $array;
@@ -121,20 +140,29 @@ class Customer {
         }
     }
 
-    // Bridge: Encontrar pago en sistema o devolver nulo
+    // Encontrar pago en sistema o devolver nulo
     public static function getPayment($payment_id, $custom_app_key = NULL) {
-        if($payment = \Solunes\Payments\App\Payment::find($payment_id)){
+        if($payment = \Solunes\Payments\App\Payment::where('id', $payment_id)->where('status','holding')->first()){
             // Definir variables de pago en formato PagosTT: name, items[concepto, cantidad, costo_unitario]
             $item = [];
             $item['id'] = $payment->id;
             $item['name'] = $payment->name;
             $subitems_array = [];
             foreach($payment->payment_items as $payment_item){
-                $subitems_array[] = \Pagostt::generatePaymentItem($payment_item->name, $payment_item->quantity, $payment_item->amount, $payment->invoice);
+                if(config('customer.enable_test')==1){
+                    $amount = 1;
+                } else {
+                    $amount = $payment_item->amount;
+                }
+                $subitems_array[] = \Pagostt::generatePaymentItem($payment_item->name, $payment_item->quantity, $amount, $payment->has_invoice);
             }
-            $item['amount'] = $payment->amount;
+            if(config('customer.enable_test')==1){
+                $item['amount'] = count($payment->payment_items);
+            } else {
+                $item['amount'] = $payment->amount;
+            }
             $item['items'] = $subitems_array;
-            $item['has_invoice'] = $payment->has_invoice;
+            $item['has_invoice'] = $payment->invoice;
             //$item['metadata'][] = \Pagostt::generatePaymentMetadata('Tipo de Cambio', $payment->exchange);
             return $item;
         } else {
@@ -142,18 +170,56 @@ class Customer {
         }
     }
 
+    // Encontrar seleccionados en un checkbox
+    public static function getCheckboxPayments($customer_id, $payments_array, $custom_app_key) {
+        \Log::info('getCheckboxPayments'.json_encode($payments_array));
+        $payments = \Solunes\Payments\App\Payment::whereIn('id', $payments_array)->get();
+        if(count($payments)>0){
+            $items = [];
+            foreach($payments as $payment){
+                // Definir variables de pago en formato PagosTT: name, items[concepto, cantidad, costo_unitario]
+                $item = [];
+                $item['id'] = $payment->id;
+                $item['name'] = $payment->name;
+                $subitems_array = [];
+                foreach($payment->payment_items as $payment_item){
+                    if(config('customer.enable_test')==1){
+                        $amount = 1;
+                    } else {
+                        $amount = $payment_item->amount;
+                    }
+                    $subitems_array[] = \Pagostt::generatePaymentItem($payment_item->name, $payment_item->quantity, $amount, $payment->invoice);
+                }
+                if(config('services.enable_test')==1){
+                    $item['amount'] = count($payment->payment_items);
+                } else {
+                    $item['amount'] = $payment->amount;
+                }
+                $item['items'] = $subitems_array;
+                $items[$payment->id] = $item;
+            }
+            $array['pending_payments'] = $items;
+            $array['payment']['name'] = 'Múltiples pagos seleccionados';
+            $array['payment']['has_invoice'] = $payment->invoice;
+            //$array['payment']['metadata'][] = \Pagostt::generatePaymentMetadata('Tipo de Cambio', $payment->exchange);
+            return $array;
+        } else {
+            return NULL;
+        }
+    }
+
     // Bridge: Procesar pagos dentro del sistema luego de que la transacción fue procesada correctamente
-    public static function transactionSuccesful($ptt_transaction) {
+    public static function transactionSuccesful($transaction) {
         $date = date('Y-m-d');
-        if($ptt_transaction){
-            foreach($ptt_transaction->ptt_transaction_payments as $ptt_transaction_payment){
-                $payment_id = $ptt_transaction_payment->payment_id;
+        if($transaction&&$transaction->processed){
+            foreach($transaction->transaction_payments as $transaction_payment){
+                $payment_id = $transaction_payment->payment_id;
                 $payment = \Solunes\Payments\App\Payment::find($payment_id);
                 $payment->status = 'paid';
-                //$payment->paid_method = 'pagostt';
-                //$payment->transaction_payment_code = $ptt_transaction->payment_code;
-                if($ptt_transaction->invoice_id){
-                    $payment->invoice_code = $ptt_transaction->invoice_id;
+                $transaction->paid_method = '';
+                //$transaction->transaction_payment_code = $transaction->payment_code;
+                if($transaction->invoice_id){
+                    $payment->invoice_number = $transaction->invoice_id;
                 }
                 //$payment->payment_date = $date;
                 $payment->save();

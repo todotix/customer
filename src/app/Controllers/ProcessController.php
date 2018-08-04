@@ -37,8 +37,9 @@ class ProcessController extends Controller {
         if(config('customer.fields.shirt_size')){
             $fields_array[] = 'shirt_size';
         }
-        if(config('customer.fields.emergency_short')){
-            $fields_array[] = 'emergency';
+        if(config('customer.fields.invoice_data')){
+            $fields_array[] = 'nit_name';
+            $fields_array[] = 'nit_number';
         }
         if(config('customer.fields.emergency_long')){
             $fields_array[] = 'emergency_name';

@@ -2,8 +2,8 @@
 
 return [
 
-	// PARAMETERS
-	'send_mail' => false,
+    // PARAMETERS
+    'send_mail' => false,
     'dependants' => false,
     'enable_test' => true,
     'fields' => [
@@ -11,6 +11,7 @@ return [
         'age'=> true,
         'shirt'=> false,
         'shirt_size'=> false,
+        'invoice_data'=> true,
         'emergency_short'=> true,
         'emergency_long'=> false,
     ],

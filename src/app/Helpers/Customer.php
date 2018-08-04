@@ -40,11 +40,11 @@ class Customer {
         if(!$password){
             $password = rand(100000,999999);
         }
-
         if(!$customer = \Todotix\Customer\App\Customer::where('ci_number', $ci_number)->first()){
             $customer = new \Todotix\Customer\App\Customer;
             $customer->ci_number = $ci_number;
             $customer->email = $email;
+            $customer->active = 1;
         }
         foreach($array as $key => $val){
             $customer->$key = $val;

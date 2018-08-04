@@ -22,7 +22,7 @@
             <tr>
               <td>{{ $payment->name }}</td>
               <td>{{ $payment->date }}</td>
-              <td>Bs. {{ $payment->amount }}</td>
+              <td>{{ $payment->currency->code.' '.$payment->real_amount }}</td>
               <td class="edit"><a href="{{ url('pagostt/make-single-payment/'.$customer_array['customer']->id.'/'.$payment->id) }}">Pagar</a></td>
             </tr>
           @endforeach

@@ -24,13 +24,13 @@
               <tr>
                 <td>{{ $transaction_payment->parent->payment_code }}</td>
                 <td>{{ $payment->date }}</td>
-                <td>{{ $transaction_payment->parent->created_at->format('d/m/Y H:i') }}</td>
+                <td>{{ $payment->payment_date }}</td>
                 <td>{{ $payment->name }}</td>
-                <td>Bs. {{ $payment->amount }}</td>
-                @if($payment->invoice_id)
-                	<td class="restore"><a target="_blank" href="{{ url(config('pagostt.invoice_server').$payment->invoice_id) }}">Ver Factura</a></td>
+                <td>{{ $payment->currency->code.' '.$payment->real_amount }}</td>
+                @if($payment->invoice_url)
+                  <td class="restore"><a target="_blank" href="{{ $payment->invoice_url }}">Ver Factura</a></td>
                 @else
-                	<td class="restore">-</td>
+                  <td class="restore">-</td>
                 @endif
               </tr>
             @endforeach

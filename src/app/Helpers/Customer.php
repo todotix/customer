@@ -94,8 +94,8 @@ class Customer {
         if($customer = \Todotix\Customer\App\Customer::where('id',$customer_id)->first()){
             // Definir variables de cliente en formato PagosTT: email, name, nit_name, nit_number
             $array['id'] = $customer->id;
-            $array['email'] = 'edumejia30@gmail.com';
-            //$item['email'] = $customer->email;
+            $array['email'] = $customer->email;
+            //$array['email'] = 'edumejia30@gmail.com';
             $array['ci_number'] = $customer->ci_number;
             $array['name'] = $customer->first_name.' '.$customer->last_name;
             $array['first_name'] = $customer->first_name;
@@ -154,7 +154,7 @@ class Customer {
                 } else {
                     $amount = $payment_item->amount;
                 }
-                $subitems_array[] = \Pagostt::generatePaymentItem($payment_item->name, $payment_item->quantity, $amount, $payment->has_invoice);
+                $subitems_array[] = \Pagostt::generatePaymentItem($payment_item->name, $payment_item->quantity, $amount, $payment->invoice);
             }
             if(config('customer.enable_test')==1){
                 $item['amount'] = count($payment->payment_items);
@@ -211,17 +211,19 @@ class Customer {
     // Bridge: Procesar pagos dentro del sistema luego de que la transacción fue procesada correctamente
     public static function transactionSuccesful($transaction) {
         $date = date('Y-m-d');
-        if($transaction&&$transaction->processed){
+        if($transaction&&$transaction->status=='paid'){
             foreach($transaction->transaction_payments as $transaction_payment){
-                $payment_id = $transaction_payment->payment_id;
-                $payment = \Solunes\Payments\App\Payment::find($payment_id);
-                $payment->status = 'paid';
-                $transaction->paid_method = '';
-                //$transaction->transaction_payment_code = $transaction->payment_code;
-                if($transaction->invoice_id){
-                    $payment->invoice_number = $transaction->invoice_id;
+                $transaction_payment->processed = 1;
+                $transaction_payment->save();
+                $payment = $transaction_payment->payment;
+                if($transaction_invoice = $transaction->transaction_invoice){
+                    $payment->invoice = 1;
+                    $payment->invoice_name = $transaction_invoice->customer_name;
+                    $payment->invoice_nit = $transaction_invoice->customer_nit;
+                    $payment->invoice_url = $transaction_invoice->invoice_url;
                 }
-                //$payment->payment_date = $date;
+                $payment->status = 'paid';
+                $payment->payment_date = $date;
                 $payment->save();
             }
             return true;

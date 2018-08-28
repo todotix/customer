@@ -61,11 +61,11 @@ class ProcessController extends Controller {
           if(config('customer.fields.password')){
 	        $password = $request->input('password');
 	      }
-	      /*if(\Todotix\Customer\App\Customer::where('ci_number', $ci_number)->first()){
-	        return redirect($this->prev)->with('message_error', 'Ya existe un participante registrado con su carnet de identidad. Inicie sesión primero.')->withInput();
-	      }*/
-	      if(\Todotix\Customer\App\Customer::where('ci_number', $ci_number)->first()){
-	        return redirect($this->prev)->with('message_error', 'Ya existe un participante registrado con su carnet de identidad. Inicie sesión primero.')->withInput();
+	      if($existing_customer = \Todotix\Customer\App\Customer::where('ci_number', $ci_number)->first()){
+	      	if($existing_customer->user&&$existing_customer->team_customers()->where('team_id', $request->input('team_id'))->count()>0){
+	      	  auth()->login($existing_customer->user);
+	          return redirect('admin/my-payments')->with('message_success', 'Usted ya se encuentra registrado en este torneo con este equipo. Le recomendamos realizar su pago aquí.')->withInput();
+	      	}
 	      }
 	      $array = [];
 	      foreach($fields_array as $key => $val){

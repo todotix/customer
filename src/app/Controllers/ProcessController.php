@@ -64,6 +64,9 @@ class ProcessController extends Controller {
 	      /*if(\Todotix\Customer\App\Customer::where('ci_number', $ci_number)->first()){
 	        return redirect($this->prev)->with('message_error', 'Ya existe un participante registrado con su carnet de identidad. Inicie sesión primero.')->withInput();
 	      }*/
+	      if(\Todotix\Customer\App\Customer::where('ci_number', $ci_number)->first()){
+	        return redirect($this->prev)->with('message_error', 'Ya existe un participante registrado con su carnet de identidad. Inicie sesión primero.')->withInput();
+	      }
 	      $array = [];
 	      foreach($fields_array as $key => $val){
 	      	if(!in_array($val, ['password_confirmation','ci_number','email','age'])){

@@ -4,6 +4,10 @@ return array(
 
 	// MENU
 	'todotix' => 'Todotix',
+	'nomina-clientes' => 'Customer List',
+	'nomina-pagos' => 'Payment List',
+	'pagos-pendientes' => 'Pending Payments',
+	'historial-pagos' => 'My History',
 
 	// CUSTOM TRANS
 	'0' => 'No',

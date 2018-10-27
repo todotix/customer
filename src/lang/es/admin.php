@@ -4,7 +4,11 @@ return array(
 
 	// MENU
 	'todotix' => 'Todotix',
-
+	'nomina-clientes' => 'Nómina de Clientes',
+	'nomina-pagos' => 'Nómina de Pagos',
+	'pagos-pendientes' => 'Mis Pagos Pendientes',
+	'historial-pagos' => 'Mi Historial',
+	
 	// CUSTOM TRANS
 	'0' => 'No',
 	'1' => 'Si',

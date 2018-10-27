@@ -8,12 +8,19 @@ class Customer {
     
     public static function before_seed_actions() {
       $menu = \Solunes\Master\App\Menu::where('permission','todotix')->first();
-      if($menu){
-        \Solunes\Master\App\Menu::create(['menu_type'=>'admin','level'=>2,'parent_id'=>$menu->id,'icon'=>'table','name'=>'Nómina de Clientes','permission'=>'todotix','link'=>'admin/model-list/customer?search=1']);
-        \Solunes\Master\App\Menu::create(['menu_type'=>'admin','level'=>2,'parent_id'=>$menu->id,'icon'=>'table','name'=>'Nómina de Pagos','permission'=>'todotix','link'=>'admin/model-list/payment?search=1']);
+      foreach(\Solunes\Master\App\Language::get() as $language){
+        \App::setLocale($language->code);
+        $menu_labels['nomina-clientes'][$language->code] = ['name'=>trans('customer::admin.nomina-clientes'),'link'=>'admin/model-list/customer?search=1'];
+        $menu_labels['nomina-pagos'][$language->code] = ['name'=>trans('customer::admin.nomina-pagos'),'link'=>'admin/model-list/payment?search=1'];
+        $menu_labels['pagos-pendientes'][$language->code] = ['name'=>trans('customer::admin.pagos-pendientes'),'link'=>'admin/my-payments'];
+        $menu_labels['historial-pagos'][$language->code] = ['name'=>trans('customer::admin.historial-pagos'),'link'=>'admin/my-history'];
       }
-      \Solunes\Master\App\Menu::create(['menu_type'=>'admin','icon'=>'dollar','name'=>'Mis Pagos Pendientes','permission'=>'members','link'=>'admin/my-payments']);
-      \Solunes\Master\App\Menu::create(['menu_type'=>'admin','icon'=>'table','name'=>'Mi Historial','permission'=>'members','link'=>'admin/my-history']);
+      if($menu){
+        \Solunes\Master\App\Menu::create(array_merge(['menu_type'=>'admin','level'=>2,'parent_id'=>$menu->id,'icon'=>'table','permission'=>'todotix'],$menu_labels['nomina-clientes']));
+        \Solunes\Master\App\Menu::create(array_merge(['menu_type'=>'admin','level'=>2,'parent_id'=>$menu->id,'icon'=>'table','permission'=>'todotix'],$menu_labels['nomina-pagos']));
+      }
+      \Solunes\Master\App\Menu::create(array_merge(['menu_type'=>'admin','icon'=>'dollar','permission'=>'members'],$menu_labels['pagos-pendientes']));
+      \Solunes\Master\App\Menu::create(array_merge(['menu_type'=>'admin','icon'=>'table','permission'=>'members'],$menu_labels['historial-pagos']));
     }
 
     public static function validateRegister($fields_array) {

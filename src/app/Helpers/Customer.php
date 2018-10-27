@@ -6,7 +6,7 @@ use Validator;
 
 class Customer {
     
-    public static function after_seed_actions() {
+    public static function before_seed_actions() {
       $menu = \Solunes\Master\App\Menu::where('permission','todotix')->first();
       if($menu){
         \Solunes\Master\App\Menu::create(['menu_type'=>'admin','level'=>2,'parent_id'=>$menu->id,'icon'=>'table','name'=>'Nómina de Clientes','permission'=>'todotix','link'=>'admin/model-list/customer?search=1']);
